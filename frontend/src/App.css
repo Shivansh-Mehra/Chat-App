@@ -1,0 +1,26 @@
+body {
+    background-color: #181a1b;
+    color: #ffffff;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  .landing-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+  }
+  
+  .landing-image {
+    max-width: 100%;
+    max-height: 400px; /* Set a maximum height for the image */
+    height: auto;
+    background-color: #181a1b; /* Ensure the image background matches the page background */
+    border: none;
+  }
