@@ -11,6 +11,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const mongoStore = require('connect-mongo');
 const User = require('./models/User');
+const userRouter = require('./routes/users');
 const port = process.env.PORT;
 //think of concurrently or similar tool else use seperate terminals to run both frontend and backend at the same time.
 
@@ -55,9 +56,7 @@ app.use(new localStrategy(passport.authenticate(User.authenticate())));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-app.get('/',(req,res) => {
-    res.json({"message":"Welcome to chat app"});
-})
+app.use('/users',userRouter);
 
 app.listen(port,() => {
     console.log("chat app running");
