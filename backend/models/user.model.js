@@ -13,8 +13,10 @@ const userSchema = new Schema({
         unique: true
     },
     profilePic: {
-        type: String,
-        default: ""
+        type: {
+            url: String,
+            filename: String
+        }
     }
 }, {timestamps: true})
 
