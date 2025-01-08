@@ -19,8 +19,9 @@ export const signupForm = (req,res) => {
 } 
 export const signupLogic = wrapAsyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
-    const { url, filename } = req.file;
-    const profilePic = { url, filename };
+    const { path, filename } = req.file;
+    let profilePic = { url: "", filename: "" };
+    if (path) profilePic = { url: path, filename };
     if (!username || !email || !password) {
         res.status(400).send("All fields are required");
         return;
@@ -29,15 +30,21 @@ export const signupLogic = wrapAsyncHandler(async (req, res) => {
         res.status(400).send("password must be at least 6 characters long");
         return;
     }
-    const user = await new User({ username, email, profilePic });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+        res.status(400).send("Email already exists");
+        return;
+    }
+    const user = new User({ username, email, profilePic });
     const newUser = await User.register(user, password);
     if (newUser) {
         req.login(newUser, err => {
             if (err) {
                 console.error(err);
+                return res.status(500).send("Error logging in");
             }
+            res.redirect('/');
         });
-        res.redirect('/');
     } else {
         res.send("error");
     }

@@ -10,6 +10,7 @@ const DB_URL = process.env.DB_URL
 import passport from 'passport';
 import localStrategy from 'passport-local';
 import passportLocalMongoose from 'passport-local-mongoose';
+import messageRouter from '../routes/message.routes.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import User from '../models/user.model.js';
@@ -58,8 +59,8 @@ app.use((req,res,next) => {
     next();
 })
 
-app.use('/auth',authRouter);
-
+app.use('/api/auth',authRouter);
+app.use('/api/message',messageRouter);
 
 app.get('/',(req,res) => {
     res.send("Home");

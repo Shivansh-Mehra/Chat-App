@@ -14,11 +14,11 @@ authRouter.route('/login')
           
 authRouter.route('/signup')
             .get(signupForm)
-            .post(signupLogic);
+            .post(upload.single('image'),signupLogic);
 authRouter.get('/logout',logout);
 
 authRouter.route('/update-profile')
             .get(updateForm)
-            .post(checkUser,updateProfile);
+            .post(checkUser,upload.single('image'),updateProfile);
 
 export default authRouter;

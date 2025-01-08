@@ -1,5 +1,5 @@
 import {v2 as cloudinary} from 'cloudinary';
-import {cloudinaryStorage} from 'multer-storage-cloudinary';
+import {CloudinaryStorage} from 'multer-storage-cloudinary';
 import {config} from 'dotenv';
 
 config();
@@ -10,7 +10,7 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_SECRET
 });
 
-const storage = cloudinaryStorage({
+const storage = new CloudinaryStorage({
     cloudinary,
     params: {
         folder: 'chatroom',
