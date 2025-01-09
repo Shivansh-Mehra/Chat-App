@@ -48,10 +48,20 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 // passport.use(new localStrategy(User.authenticate()));
-passport.use(User.createStrategy());
+// passport.use(User.createStrategy());
+passport.use(new localStrategy(User.authenticate()));
+passport.use(new localStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+}, User.authenticate()));
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.serializeUser((user, done) => done(null, user.id));
+
+passport.deserializeUser((id, done) => {
+
+  User.findById(id, (err, user) => done(err, user));
+
+});
 
 //setup locals
 app.use((req,res,next) => {

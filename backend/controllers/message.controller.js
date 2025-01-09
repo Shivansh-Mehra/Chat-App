@@ -15,3 +15,38 @@ export const getSidebarUsers = wrapAsyncHandler(async (req,res) => {
         res.status(500).send("Error while fetching users");
     }
 })
+
+export const getMessages = wrapAsyncHandler(async (req,res) => {
+    const {id} = req.params;
+    try {
+        const messages = await Message.find({$or: [{senderId: req.user._id,receiverId: id},{senderId: id,receiverId: req.user._id}]});
+        res.status(200).json(messages);
+    } catch (err) {
+        res.status(200).send("Error while fetching messages");
+    }
+})
+
+export const sendMessage = wrapAsyncHandler(async (req,res) => {
+    const {id} = req.params;
+    const {message} = req.body;
+    const {path,filename} = req.file;
+    if(!message && !req.file) {
+        res.status(400).send("Message or image is required");
+        return;
+    }
+    let image;
+    if(path) {
+        image = {url: path,filename};
+    }
+    if(!path) {
+        image = null;
+    }
+    try {
+        const msg = await new Message({senderId: req.user._id,receiverId: id,message,image});
+        const newMsg = await msg.save();
+        res.status(200).json(newMsg);
+    } catch(err) {
+        res.status(500).send("Error while sending message");
+    }
+
+})

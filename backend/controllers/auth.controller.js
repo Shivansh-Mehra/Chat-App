@@ -19,7 +19,7 @@ export const signupForm = (req,res) => {
 } 
 export const signupLogic = wrapAsyncHandler(async (req, res) => {
     const { username, email, password } = req.body;
-    const { path, filename } = req.file;
+    const { path, filename } = req.file || {path: "",filename: ""};
     let profilePic = { url: "", filename: "" };
     if (path) profilePic = { url: path, filename };
     if (!username || !email || !password) {

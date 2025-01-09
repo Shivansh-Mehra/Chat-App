@@ -1,7 +1,7 @@
 import express from 'express';
 import {signupForm,loginForm,logout,loginLogic,signupLogic, updateProfile,updateForm} from '../controllers/auth.controller.js'
 import passport from 'passport';
-import { checkUser } from '../middleware/auth.checkUser.js';
+import {checkUser} from '../middleware/auth.checkUser.js';
 import multer from 'multer';
 import { storage } from '../lib/cloudinary.js';
 const authRouter = express.Router();
@@ -10,7 +10,7 @@ const upload = multer({storage});
 
 authRouter.route('/login')
             .get(loginForm)
-            .post(passport.authenticate('local',{failureRedirect: '/removeme'}),loginLogic);
+            .post(passport.authenticate('local', { failureRedirect: '/api/auth/login' }), loginLogic);
           
 authRouter.route('/signup')
             .get(signupForm)
