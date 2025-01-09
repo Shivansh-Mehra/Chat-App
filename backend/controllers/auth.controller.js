@@ -80,3 +80,11 @@ export const updateProfile = wrapAsyncHandler(async(req,res) => {
         res.status(500).send("error while updating profile");
     }
 });
+
+export const checkStatus = (req,res) => {
+    if(req.isAuthenticated()) {
+        res.send(req.user);
+    } else {
+        res.status(401).send("You are not logged in");
+    }
+}

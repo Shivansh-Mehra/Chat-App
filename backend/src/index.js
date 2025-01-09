@@ -16,6 +16,7 @@ import MongoStore from 'connect-mongo';
 import User from '../models/user.model.js';
 import connectToDatabase from '../lib/db.js';   
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 
 const app = express();
 
@@ -24,6 +25,10 @@ connectToDatabase(DB_URL);
 
 
 //config
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
