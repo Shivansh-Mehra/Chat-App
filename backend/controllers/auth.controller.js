@@ -38,12 +38,21 @@ export const signupLogic = wrapAsyncHandler(async (req, res) => {
     const user = new User({ username, email, profilePic });
     const newUser = await User.register(user, password);
     if (newUser) {
-        req.login(newUser, err => {
-            if (err) {
-                console.error(err);
-                return res.status(500).send("Error logging in");
-            }
-            res.redirect('/');
+        await new Promise((resolve, reject) => {
+            req.login(newUser, err => {
+                if (err) {
+                    console.error(err);
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
+        });
+        res.status(201).json({
+            _id: newUser._id,
+            username: newUser.username,
+            email: newUser.email,
+            profilePic: newUser.profilePic,
         });
     } else {
         res.send("error");

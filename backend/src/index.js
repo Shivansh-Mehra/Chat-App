@@ -31,7 +31,7 @@ app.use(cors({
 }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser(process.env.SECRET));
 
 const sessionStore = MongoStore.create({
     mongoUrl: DB_URL
@@ -60,13 +60,9 @@ passport.use(new localStrategy({
     passwordField: 'password'
 }, User.authenticate()));
 
-passport.serializeUser((user, done) => done(null, user.id));
+passport.serializeUser(User.serializeUser());
 
-passport.deserializeUser((id, done) => {
-
-  User.findById(id, (err, user) => done(err, user));
-
-});
+passport.deserializeUser(User.deserializeUser());
 
 //setup locals
 app.use((req,res,next) => {
