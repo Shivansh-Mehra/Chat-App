@@ -77,14 +77,20 @@ export const updateForm = (req,res) => {
 }
 
 export const updateProfile = wrapAsyncHandler(async(req,res) => {
-    const { url, filename } = req.file;
-    if(!url || !filename) {
+    const {path,filename} = req.file;
+    if(!path || !filename) {
         res.status(400).send("Please upload an image");
         return;
     }
-    const profilePic = { url, filename };
+    const profilePic = { url: path, filename };
     try {
         const user = await User.findByIdAndUpdate(req.user._id, { profilePic });
+        res.status(200).json({
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            profilePic
+        });
     } catch(err) {
         res.status(500).send("error while updating profile");
     }
