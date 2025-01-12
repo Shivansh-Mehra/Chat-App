@@ -1,4 +1,6 @@
 /** @type {import('tailwindcss').Config} */
+import daisyui from 'daisyui'
+import { THEMES } from './src/constants/idx'
 export default {
   content: [
     "./index.html",
@@ -7,5 +9,10 @@ export default {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    daisyui,
+  ],
+  daisyui: {
+    themes: THEMES
+  }
 }

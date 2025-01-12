@@ -30,9 +30,10 @@ export default function NavBar() {
 
                     <button className='flex gap-2 items-center' onClick={logout}>
                         <LogOut className='size-5 text-blue-500' />
-                        <span className='hidden sm:inline'>Logout</span>
+                        <span className='hidden sm:inline text-blue-500'>Logout</span>
                     </button>
                 </>}
+                
             </div>
         </nav>
     )
