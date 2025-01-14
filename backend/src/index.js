@@ -77,10 +77,6 @@ app.get('/',(req,res) => {
     res.send("Home");
 })
 
-app.get('/removeme',(req,res) => {
-    res.send("hello login failed");
-})
-
 //server start
 app.listen(port,() => {
     console.log("server running on "+port);
