@@ -1,6 +1,7 @@
 import {create} from 'zustand'
 import toast from 'react-hot-toast'
 import { axiosInstance } from '../lib/axios'
+import messageModel from '../../../backend/models/message.model';
 {/*object -> ({}) -> state*/}
 export const useChatStore = create((set) => ({
     messages: [],
@@ -35,5 +36,11 @@ export const useChatStore = create((set) => ({
 
     setSelectedUser: (userId) => {
         set({selectedUser: userId});
-    }
+    },
+
+    // sendMessage: async(id,message,media) => {
+    //     try {
+            
+    //     }
+    // }
 }))

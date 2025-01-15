@@ -2,7 +2,6 @@ import React from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import defaultPic from '../assets/default_insta.jpg';
 import { Camera, Mail, User } from "lucide-react";
-import wrapAsyncHandler from '../../../backend/lib/wrapAsyncHandler';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {

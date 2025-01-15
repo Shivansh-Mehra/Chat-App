@@ -33,12 +33,12 @@ export default function Sidebar() {
         <div className="overflow-y-auto h-96 w-full">
             {users.map((user) => {
                 return <div
-                    key = {user.id}
+                    key = {user._id}
                     onClick = {() => setSelectedUser(user)}
                     className="flex items-center hover:bg-gray-100 gap-2 p-2 cursor-pointer"
                 >
-                    <img src={user.profilePic.url ? user.profilePic.url : defaultProfilePic} alt="profile pic" className="border rounded-full size-12"/>
-                    <div>
+                    <img src={user.profilePic.url ? user.profilePic.url : defaultProfilePic} alt="profile pic" className="border rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"/>
+                    <div className="hidden lg:block">
                         <p className="font-medium">{user.username}</p>
                         <p className="text-xs text-gray-500">Offline</p>
                     </div>
