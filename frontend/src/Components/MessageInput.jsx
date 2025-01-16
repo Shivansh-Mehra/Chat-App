@@ -12,10 +12,13 @@ export default function MessageInput() {
     const handleChange = (e) => {
         setMessage({ ...message, text: e.target.value });
     };
-
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         if (file) {
+            if (!file.type.startsWith('image/')) {
+                alert('Please upload a valid image file.');
+                return;
+            }
             const filePreview = URL.createObjectURL(file);
             setMessage({ ...message, image: file, filePreview });
         }

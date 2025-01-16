@@ -8,8 +8,12 @@ export const loginForm = (req,res) => {
 
 export const loginLogic = (req,res) => {
     if(req.isAuthenticated()) {
-        return res.send(req.user);
-        return res.redirect('/');
+        res.status(201).json({
+            _id: req.user._id,
+            username: req.user.username,
+            email: req.user.email,
+            profilePic: req.user.profilePic,
+        });
     }
     res.send("login logic here");
 }

@@ -1,7 +1,6 @@
 import React from 'react'
 import {MessageSquare,User,Mail,Lock,Eye,EyeOff,Loader2} from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore';
-import { Link } from 'react-router-dom';
 import AuthImagePattern from '../Components/AuthImagePattern';
 import toast from 'react-hot-toast'
 export default function LoginPage() {

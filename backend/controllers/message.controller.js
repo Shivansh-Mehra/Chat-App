@@ -19,7 +19,8 @@ export const getSidebarUsers = wrapAsyncHandler(async (req,res) => {
 export const getMessages = wrapAsyncHandler(async (req,res) => {
     const {id} = req.params;
     try {
-        const messages = await Message.find({$or: [{senderId: req.user._id,receiverId: id},{senderId: id,receiverId: req.user._id}]});
+        const messages = await Message.find({$or: [{senderId: req.user._id,receiverId: id},{senderId: id,receiverId: req.user._id}]})
+        .populate('senderId','username profilePic').sort({createdAt: 1});
         res.status(200).json(messages);
     } catch (err) {
         res.status(200).send("Error while fetching messages");
@@ -28,9 +29,9 @@ export const getMessages = wrapAsyncHandler(async (req,res) => {
 
 export const sendMessage = wrapAsyncHandler(async (req,res) => {
     const {id} = req.params;
-    const {text,path,filename} = req.body;
+    const {text} = req.body;
+    const {path,filename} = req.file || {};
     if(!text && !path) {
-        // console.log("here");
         res.status(400).send("Message or image is required");
         return;
     }
