@@ -13,7 +13,6 @@ export default function Sidebar() {
   }
   React.useEffect(() => {
     getUsers();
-    console.log(users);
   }, [getUsers]);
 
   if (isUsersLoading) {

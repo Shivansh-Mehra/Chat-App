@@ -28,9 +28,9 @@ export const getMessages = wrapAsyncHandler(async (req,res) => {
 
 export const sendMessage = wrapAsyncHandler(async (req,res) => {
     const {id} = req.params;
-    const {message} = req.body;
-    const {path,filename} = req.file;
-    if(!message && !req.file) {
+    const {text,path,filename} = req.body;
+    if(!text && !path) {
+        // console.log("here");
         res.status(400).send("Message or image is required");
         return;
     }
@@ -42,11 +42,11 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
         image = null;
     }
     try {
-        const msg = await new Message({senderId: req.user._id,receiverId: id,message,image});
-        const newMsg = await msg.save();
-        res.status(200).json(newMsg);
+        const msg = await new Message({senderId: req.user._id,receiverId: id,message: text,image});
+        await msg.save();
+        res.status(200).json(msg);
     } catch(err) {
-        res.status(500).send("Error while sending message");
+        res.status(500).send("Error sending message");
     }
-
-})
+}
+)

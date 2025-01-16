@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Image, X } from 'lucide-react';
+import { Image,Send, X } from 'lucide-react';
 import { useChatStore } from '../store/useChatStore';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -30,6 +30,7 @@ export default function MessageInput() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(message.text.trim() === '' && !message.image) return;
         const formData = new FormData();
         formData.append('text', message.text);
         formData.append('senderId', authUser._id);
@@ -45,7 +46,7 @@ export default function MessageInput() {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-between gap-2 p-4 border-t border-gray-200">
+        <form onSubmit={handleSubmit} className="flex flex-col items-center justify-between gap-2 p-4 border-t border-gray-200" encType='multipart/form-data'>
             {message.filePreview && (
                 <div className="relative w-full mb-2">
                     <img src={message.filePreview} alt="Preview" className="w-24 h-24 object-cover rounded" />
@@ -82,6 +83,11 @@ export default function MessageInput() {
                         ref={fileInputRef}
                     />
                 </div>
+                <label htmlFor="sub">
+                    <Send className='size-6 cursor-pointer'/>
+                </label>
+                <button type='submit' className='hidden' id='sub'>
+                </button>
             </div>
         </form>
     );
