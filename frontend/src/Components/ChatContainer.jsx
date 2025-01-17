@@ -23,7 +23,7 @@ export default function ChatContainer() {
       <ChatHeader />
       <div className='flex-grow overflow-y-auto'>
         {messages.map((msg) => (
-          <div key={msg._id} className={`chat ${msg.senderId === selectedUser._id ? 'chat-start' : 'chat-end'}`}>
+          <div key={msg._id} className={`chat ${msg.senderId._id === selectedUser._id ? 'chat-start' : 'chat-end'}`}>
             <div className="chat-image ">
               <img src={msg.senderId.profilePic ? msg.senderId.profilePic.url : defaultProfilePic} alt="avatar" className="size-10 rounded-full border" />
             </div>

@@ -6,7 +6,7 @@ export default function ChatHeader() {
     return (
         <div className="w-full border-b border-gray-200 flex items-center justify-between p-4">
             <div className="flex items-center gap-2">
-                <img src={selectedUser.profilePic.url ? selectedUser.profilePic.url : defaultProfilePic} alt="hm" 
+                <img src={selectedUser.profilePic ? selectedUser.profilePic.url : defaultProfilePic} alt="hm" 
                     className="border rounded-full w-12 h-12"
                 />
                 <div>

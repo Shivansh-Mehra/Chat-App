@@ -36,7 +36,7 @@ export default function Sidebar() {
                     onClick = {() => setSelectedUser(user)}
                     className="flex items-center hover:bg-gray-100 gap-2 p-2 cursor-pointer"
                 >
-                    <img src={user.profilePic.url ? user.profilePic.url : defaultProfilePic} alt="profile pic" className="border rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"/>
+                    <img src={user.profilePic && user.profilePic.url !== "" ? user.profilePic.url : defaultProfilePic} alt="profile pic" className="border rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"/>
                     <div className="hidden lg:block">
                         <p className="font-medium">{user.username}</p>
                         <p className="text-xs text-gray-500">Offline</p>

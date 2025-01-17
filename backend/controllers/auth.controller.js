@@ -1,14 +1,11 @@
 import wrapAsyncHandler from '../lib/wrapAsyncHandler.js'
 import User from '../models/user.model.js';
-export const loginForm = (req,res) => {
-    res.send("login here");
-} 
 
 //logic -> if logged in and wanna log into another account, logout first then login.
 
 export const loginLogic = (req,res) => {
     if(req.isAuthenticated()) {
-        res.status(201).json({
+        return res.status(201).json({
             _id: req.user._id,
             username: req.user.username,
             email: req.user.email,

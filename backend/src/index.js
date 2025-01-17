@@ -54,7 +54,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 // passport.use(new localStrategy(User.authenticate()));
 // passport.use(User.createStrategy());
-passport.use(new localStrategy(User.authenticate()));
+// passport.use(new localStrategy(User.authenticate()));
 passport.use(new localStrategy({
     usernameField: 'email',
     passwordField: 'password'

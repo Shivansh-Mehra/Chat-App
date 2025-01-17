@@ -29,6 +29,7 @@ export const useAuthStore = create((set) => ({
             toast.success("Signed up!");
             set({authUser: signedUp.data});
         } catch (err) {
+            console.log(err);
             toast.error("Failed to sign up");
         } finally {
             set({isSigningUp: false});
@@ -48,11 +49,19 @@ export const useAuthStore = create((set) => ({
     login: async (data) => {
         set({isLoggingIn: true});
         try {
-            const res = await axiosInstance.post('/auth/login', data);
+            // const formData = new FormData();
+            // formData.append('email', data.email);
+            // formData.append('password', data.password);
+            // const res = await axiosInstance.post('/auth/login', formData);
+            const res = await axiosInstance.post('/auth/login', {
+                email: data.email,
+                password: data.password,
+            });
             toast.success("Logged in!");
             set({authUser: res.data});
-            console.log(authUser);
+            console.log(res.data);
         } catch (err) {
+            console.error(err);
             toast.error("Failed to log in");
         } finally {
             set({isLoggingIn: false});
