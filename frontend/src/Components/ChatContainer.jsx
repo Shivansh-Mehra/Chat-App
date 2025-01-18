@@ -6,10 +6,21 @@ import MessageSkeleton from './skeleton/MessageSkeleton';
 import defaultProfilePic from '../assets/default_insta.jpg';
 import { formatMessageTime } from '../lib/times'; 
 export default function ChatContainer() {
-  const {selectedUser,messages,getMessages,isMessagesLoading} = useChatStore();  
+  const messageEndRef = React.useRef(null);
+  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubsribeFromMessages} = useChatStore();  
   React.useEffect(() => {
     getMessages(selectedUser._id);
-  },[selectedUser,getMessages]);
+
+    subscribeToMessages();
+
+    return () => unsubsribeFromMessages();
+  },[selectedUser,getMessages,subscribeToMessages,unsubsribeFromMessages]);
+
+  React.useEffect(() => {
+    if(messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({behavior: 'smooth'});
+    }
+  },[messages]);
 
   if(isMessagesLoading) return (
     <div className="w-full h-full flex flex-col flex-1 overflow-auto">
@@ -23,7 +34,7 @@ export default function ChatContainer() {
       <ChatHeader />
       <div className='flex-grow overflow-y-auto'>
         {messages.map((msg) => (
-          <div key={msg._id} className={`chat ${msg.senderId._id === selectedUser._id ? 'chat-start' : 'chat-end'}`}>
+          <div key={msg._id} className={`chat ${msg.senderId._id === selectedUser._id ? 'chat-start' : 'chat-end'}`} ref={messageEndRef}>
             <div className="chat-image ">
               <img src={msg.senderId.profilePic ? msg.senderId.profilePic.url : defaultProfilePic} alt="avatar" className="size-10 rounded-full border" />
             </div>

@@ -1,6 +1,7 @@
 import wrapAsyncHandler from '../lib/wrapAsyncHandler.js'
 import User from '../models/user.model.js';
 import Message from '../models/message.model.js';
+import { getReceiverSocketId,io } from '../lib/socket.js';
 
 export const getSidebarUsers = wrapAsyncHandler(async (req,res) => {
     if(!req.isAuthenticated()) {
@@ -45,6 +46,13 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
     try {
         const msg = await new Message({senderId: req.user._id,receiverId: id,message: text,image});
         await msg.save();
+
+        const receiverSocketId = getReceiverSocketId(id);
+
+        if(receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage",msg);
+        }
+
         res.status(200).json(msg);
     } catch(err) {
         res.status(500).send("Error sending message");
