@@ -7,7 +7,7 @@ import defaultProfilePic from "../assets/default_insta.jpg";
 export default function Sidebar() {
   const { users, getUsers, isUsersLoading, selectedUser, setSelectedUser } =
     useChatStore();
-    const { authUser } = useAuthStore();
+    const { onlineUsers } = useAuthStore();
   {
     /*change after implementing socket.io*/
   }
@@ -39,7 +39,7 @@ export default function Sidebar() {
                     <img src={user.profilePic && user.profilePic.url !== "" ? user.profilePic.url : defaultProfilePic} alt="profile pic" className="border rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12"/>
                     <div className="hidden lg:block">
                         <p className="font-medium">{user.username}</p>
-                        <p className="text-xs text-gray-500">Offline</p>
+                        <p className="text-xs text-gray-500">{onlineUsers.includes(user._id) ? "Online" : "Offline"}</p>
                     </div>
                 </div>
             })}

@@ -11,7 +11,7 @@ import { useThemeStore } from './store/useThemeStore.js';
 import {Loader} from 'lucide-react';
 import {Toaster} from 'react-hot-toast';
 export default function App() {
-    const { checkAuth, authUser,isCheckingAuth } = useAuthStore();
+    const { checkAuth, authUser,isCheckingAuth,onlineUsers } = useAuthStore();
     const {theme,setTheme} = useThemeStore();
     React.useEffect(() => {
         checkAuth();
@@ -24,7 +24,6 @@ export default function App() {
             </div>
         )
     }
-
     return (
             <div data-theme={theme} className="App min-h-screen flex flex-col">
                 <NavBar />
