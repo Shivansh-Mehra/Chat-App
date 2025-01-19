@@ -7,14 +7,14 @@ import defaultProfilePic from '../assets/default_insta.jpg';
 import { formatMessageTime } from '../lib/times'; 
 export default function ChatContainer() {
   const messageEndRef = React.useRef(null);
-  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubsribeFromMessages} = useChatStore();  
+  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubscribeFromMessages} = useChatStore();  
   React.useEffect(() => {
     getMessages(selectedUser._id);
 
     subscribeToMessages();
 
-    return () => unsubsribeFromMessages();
-  },[selectedUser,getMessages,subscribeToMessages,unsubsribeFromMessages]);
+    return () => unsubscribeFromMessages();
+  },[selectedUser,getMessages,subscribeToMessages,unsubscribeFromMessages]);
 
   React.useEffect(() => {
     if(messageEndRef.current && messages) {

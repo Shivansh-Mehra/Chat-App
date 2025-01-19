@@ -46,11 +46,19 @@ export const useChatStore = create((set,get) => ({
                 },
             });
             const newMessage = res ? res.data : '';
+            if(newMessage === '') return;
+            const authUser = useAuthStore.getState().authUser; //use this
+            newMessage.senderId = {
+                _id: authUser._id,
+                username: authUser.username,
+                profilePic: authUser.profilePic,
+            };
             set((state) => ({
                 messages: [...state.messages, newMessage],
             }));
         } catch (err) {
-            toast.error(err.response.data);
+            console.log(err);
+            toast.error("Failed to send message");
         } 
     },
 

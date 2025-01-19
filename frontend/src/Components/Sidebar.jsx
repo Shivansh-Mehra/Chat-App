@@ -1,3 +1,4 @@
+//issue -> when i send a message initially it shows the message from sender side for both users but on refreshing it fixes
 import { Users } from "lucide-react";
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
@@ -8,9 +9,8 @@ export default function Sidebar() {
   const { users, getUsers, isUsersLoading, selectedUser, setSelectedUser } =
     useChatStore();
     const { onlineUsers } = useAuthStore();
-  {
-    /*change after implementing socket.io*/
-  }
+  const [showOnline,setShowOnline] = React.useState(false);
+  const filteredUsers = showOnline ? users.filter((user) => onlineUsers.includes(user._id)) : users;
   React.useEffect(() => {
     getUsers();
   }, [getUsers]);
@@ -25,12 +25,13 @@ export default function Sidebar() {
           <Users className="size-6" />
           <span className="font-medium hidden lg:block">Contacts</span>
         </div>
-        <div className="">
-            {/*Later change this to onlineusers*/}
+        <div className="mt-2 mb-2 flex items-center gap-2">
+          <input type="checkbox" name="online" id="online" onChange={() => setShowOnline(!showOnline)} className="mr-2"/>
+          <label htmlFor="online" className="flex items-center">Show online users only</label>
         </div>
 
         <div className="overflow-y-auto h-96 w-full">
-            {users.map((user) => {
+            {filteredUsers.map((user) => {
                 return <div
                     key = {user._id}
                     onClick = {() => setSelectedUser(user)}
