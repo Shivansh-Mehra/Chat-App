@@ -5,6 +5,7 @@ if(process.env.NODE_ENV !== "production") {
 
 import express from 'express';
 import authRouter from '../routes/auth.routes.js';
+import groupRouter from '../routes/group.routes.js';
 const port = process.env.PORT || 3000;
 const DB_URL = process.env.DB_URL
 import passport from 'passport';
@@ -72,6 +73,7 @@ app.use((req,res,next) => {
 
 app.use('/api/auth',authRouter);
 app.use('/api/message',messageRouter);
+app.use('/api/group',groupRouter);
 
 app.get('/',(req,res) => {
     res.send("Home");
