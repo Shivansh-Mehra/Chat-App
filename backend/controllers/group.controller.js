@@ -1,8 +1,6 @@
-import wrapAsyncHandler from "../lib/wrapAsyncHandler";
-import User from "../models/user.model";
-import Message from "../models/message.model";
-import { getReceiverSocketId, io } from "../lib/socket";
-import Group from "../models/group.model";
+import wrapAsyncHandler from "../lib/wrapAsyncHandler.js";
+import Message from "../models/message.model.js";
+import Group from "../models/group.model.js";
 
 export const createGroup = wrapAsyncHandler(async (req, res) => {
     const { name, members } = req.body;

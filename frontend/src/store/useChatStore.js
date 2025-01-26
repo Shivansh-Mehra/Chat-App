@@ -7,8 +7,11 @@ export const useChatStore = create((set,get) => ({
     messages: [],
     users: [],
     selectedUser: null,
+    selectedGroup: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+
+    // createGroup: 
 
     getUsers: async () => {
         set({isUsersLoading: true});
@@ -34,8 +37,24 @@ export const useChatStore = create((set,get) => ({
         }
     },
 
+    getGroupMessages: async (groupId) => {
+        set({isMessagesLoading: true});
+        try {
+            const res = await axiosInstance.get('/group/' + groupId + '/messages');
+            set({messages: res.data});
+        } catch (err) {
+            toast.error("Failed to fetch messages");
+        } finally {
+            set({isMessagesLoading: false});
+        }
+    },
+
     setSelectedUser: (userId) => {
         set({selectedUser: userId});
+    },
+
+    setSelectedGroup: (groupId) => {
+        set({selectedGroup: groupId});
     },
 
     sendMessage: async(formData) => {
@@ -57,9 +76,32 @@ export const useChatStore = create((set,get) => ({
                 messages: [...state.messages, newMessage],
             }));
         } catch (err) {
-            console.log(err);
             toast.error("Failed to send message");
         } 
+    },
+
+    sendGroupMessage: async (formData) => {
+        try {
+            const res = await axiosInstance.post('/group/' + formData.get('groupId') + '/message', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            const newMessage = res ? res.data : '';
+            if(newMessage === '') return;
+            const authUser = useAuthStore.getState().authUser;
+            newMessage.senderId = {
+                _id: authUser._id,
+                username: authUser.username,
+                profilePic: authUser.profilePic,
+            };
+            set((state) => ({
+                messages: [...state.messages, newMessage],
+            }));
+        } catch (err) {
+            console.log(err);
+            toast.error("Failed to send message");
+        }
     },
 
     subscribeToMessages: () => {

@@ -1,6 +1,6 @@
-import express from 'express';
 import {Router} from 'express';
 const router = Router();
+import { createGroup,getGroupMessages,sendGroupMessage } from '../controllers/group.controller.js';
 
 router.post('/create',createGroup);
 router.get('/:groupId/messages', getGroupMessages);

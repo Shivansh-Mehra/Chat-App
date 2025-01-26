@@ -5,16 +5,21 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from './skeleton/MessageSkeleton';
 import defaultProfilePic from '../assets/default_insta.jpg';
 import { formatMessageTime } from '../lib/times'; 
+import CreateGroup from './CreateGroup'
 export default function ChatContainer() {
   const messageEndRef = React.useRef(null);
-  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubscribeFromMessages} = useChatStore();  
+  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubscribeFromMessages,getGroupMessages,selectedGroup} = useChatStore();  
   React.useEffect(() => {
-    getMessages(selectedUser._id);
+    if(selectedUser) {
+      getMessages(selectedUser._id);
+    } else if(selectedGroup) {
+      getGroupMessages(selectedGroup._id);
+    }
 
     subscribeToMessages();
 
     return () => unsubscribeFromMessages();
-  },[selectedUser,getMessages,subscribeToMessages,unsubscribeFromMessages]);
+  },[selectedUser,getMessages,subscribeToMessages,unsubscribeFromMessages,selectedGroup,getGroupMessages]);
 
   React.useEffect(() => {
     if(messageEndRef.current && messages) {
