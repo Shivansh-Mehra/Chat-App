@@ -9,7 +9,7 @@ export const createGroup = wrapAsyncHandler(async (req, res) => {
         return;
     }
     try {
-        const group = await new Group({ name, members });
+        const group = new Group({ name, members });
         await group.save();
         res.status(200).json(group);
     } catch (err) {
@@ -18,9 +18,9 @@ export const createGroup = wrapAsyncHandler(async (req, res) => {
 });
 
 export const getGroupMessages = wrapAsyncHandler(async (req,res) => {
-    const {id} = req.params;
+    const {groupId} = req.params;
     try {
-        const messages = await Message.find({groupId: id}).populate('senderId','username profilePic').sort({createdAt: 1});
+        const messages = await Message.find({groupId}).populate('senderId','username profilePic').sort({createdAt: 1});
         res.status(200).json(messages);
     } catch(err) {
         res.status(500).send("Error while fetching messages");
@@ -43,10 +43,21 @@ export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
         image = null;
     }
     try {
-        const msg = await new Message({senderId: req.user._id,groupId: id,message: text,image});
+        const msg = new Message({senderId: req.user._id,groupId: id,message: text,image});
         await msg.save();
         res.status(200).json(msg);
     } catch(err) {
         res.status(500).send("Error sending message");
     }
 });
+
+export const getGroups = wrapAsyncHandler (async (req,res) => {
+    try {
+        console.log(req.user._id);
+        const groups = await Group.find({members: {$in: [req.user._id]}});
+        console.log(groups);
+        res.status(200).json(groups);
+    } catch(err) {
+        res.status(500).send("Error fetching groups");
+    }
+})

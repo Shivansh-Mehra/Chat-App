@@ -1,9 +1,11 @@
 import {Router} from 'express';
 const router = Router();
-import { createGroup,getGroupMessages,sendGroupMessage } from '../controllers/group.controller.js';
+import { checkUser } from '../middleware/auth.checkUser.js';
+import { createGroup,getGroupMessages,sendGroupMessage,getGroups } from '../controllers/group.controller.js';
 
-router.post('/create',createGroup);
-router.get('/:groupId/messages', getGroupMessages);
-router.post('/:groupId/message', sendGroupMessage);
+router.post('/create',checkUser,createGroup);
+router.get('/:groupId/messages',checkUser, getGroupMessages);
+router.post('/:groupId/message',checkUser, sendGroupMessage);
+router.get('/get',checkUser,getGroups);
 
 export default router;

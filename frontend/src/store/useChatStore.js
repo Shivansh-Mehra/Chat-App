@@ -6,12 +6,22 @@ import { useAuthStore } from './useAuthStore';
 export const useChatStore = create((set,get) => ({
     messages: [],
     users: [],
+    groups: [],
     selectedUser: null,
     selectedGroup: null,
     isUsersLoading: false,
     isMessagesLoading: false,
+    isGroupsLoading: false,
 
-    // createGroup: 
+    createGroup: async (name,members) => { //works
+        try {
+            const res = await axiosInstance.post('/group/create', {name,members});
+
+            toast.success("Group created successfully");
+        } catch(err) {
+            toast.error("Failed to create group");
+        }
+    }, 
 
     getUsers: async () => {
         set({isUsersLoading: true});
@@ -38,6 +48,7 @@ export const useChatStore = create((set,get) => ({
     },
 
     getGroupMessages: async (groupId) => {
+        set({messages: []});
         set({isMessagesLoading: true});
         try {
             const res = await axiosInstance.get('/group/' + groupId + '/messages');
@@ -46,6 +57,17 @@ export const useChatStore = create((set,get) => ({
             toast.error("Failed to fetch messages");
         } finally {
             set({isMessagesLoading: false});
+        }
+    },
+    getGroups: async () => {
+        set({isGroupsLoading: true});
+        try {  
+            const res = await axiosInstance.get('/group/get');
+            set({groups: res.data});
+        } catch(err) {
+            res.status(500).send("Error fetching groups");
+        } finally {
+            set({isGroupsLoading: false});
         }
     },
 
