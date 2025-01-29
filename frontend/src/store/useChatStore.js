@@ -104,11 +104,13 @@ export const useChatStore = create((set,get) => ({
 
     sendGroupMessage: async (formData) => {
         try {
+            console.log('Form Data:', Array.from(formData.entries())); // Debugging statement
             const res = await axiosInstance.post('/group/' + formData.get('groupId') + '/message', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
+            console.log("HERE");
             const newMessage = res ? res.data : '';
             if(newMessage === '') return;
             const authUser = useAuthStore.getState().authUser;
@@ -127,18 +129,24 @@ export const useChatStore = create((set,get) => ({
     },
 
     subscribeToMessages: () => {
-        const {selectedUser} = get();
-        if(!selectedUser) return;
-
+        const { selectedUser, selectedGroup } = get();
         const socket = useAuthStore.getState().socket;
 
-        socket.on("newMessage",(msg) => {
-            const isMessageSentFromSelectedUser = msg.senderId === selectedUser._id;
-            if (!isMessageSentFromSelectedUser) return;
+        if (selectedUser) {
+            socket.on("newMessage", (msg) => {
+                const isMessageSentFromSelectedUser = msg.senderId === selectedUser._id;
+                if (!isMessageSentFromSelectedUser) return;
 
+                set({ messages: [...get().messages, msg] });
+            });
+        } else if (selectedGroup) {
+            socket.on("newGroupMessage", (msg) => {
+                const isMessageSentFromSelectedGroup = msg.groupId === selectedGroup._id;
+                if (!isMessageSentFromSelectedGroup) return;
 
-            set({messages: [...get().messages, msg]});
-        })
+                set({ messages: [...get().messages, msg] });
+            });
+        }
     },
 
     unsubscribeFromMessages: () => {

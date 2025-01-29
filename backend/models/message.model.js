@@ -9,8 +9,7 @@ const messageSchema = new Schema({
     },
     receiverId: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     },
     groupId: {
         type: Schema.Types.ObjectId,

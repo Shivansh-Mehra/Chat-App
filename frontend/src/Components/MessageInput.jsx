@@ -5,7 +5,7 @@ import { useAuthStore } from '../store/useAuthStore';
 
 export default function MessageInput() {
     const [message, setMessage] = React.useState({ text: '', image: null, filePreview: null });
-    const { sendMessage,selectedUser,sendGroupMessage } = useChatStore();
+    const { sendMessage,selectedUser,sendGroupMessage,selectedGroup } = useChatStore();
     const {authUser} = useAuthStore();
     const fileInputRef = useRef(null);
 
@@ -33,26 +33,24 @@ export default function MessageInput() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(message.text.trim() === '' && !message.image) return;
-        if(selectedUser) {
-            const formData = new FormData();
-            formData.append('text', message.text);
-            formData.append('senderId', authUser._id);
+        if (message.text.trim() === '' && !message.image) return;
+
+        const formData = new FormData();
+        formData.append('text', message.text);
+        formData.append('senderId', authUser._id);
+        if (message.image) {
+            formData.append('image', message.image);
+        }
+
+        if (selectedUser) {
             formData.append('receiverId', selectedUser._id);
-            if (message.image) {
-                formData.append('image', message.image);
-            }
             await sendMessage(formData);
-        } else if(selectedGroup) {
-            const formData = new FormData();
-            formData.append('text', message.text);
-            formData.append('senderId', authUser._id);
+        } else if (selectedGroup) {
             formData.append('groupId', selectedGroup._id);
-            if (message.image) {
-                formData.append('image', message.image);
-            }
+            console.log('Group Message Form Data:', Array.from(formData.entries())); // Debugging statement
             await sendGroupMessage(formData);
         }
+
         setMessage({ text: '', image: null, filePreview: null });
         if (fileInputRef.current) {
             fileInputRef.current.value = '';

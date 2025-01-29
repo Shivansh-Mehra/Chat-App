@@ -28,7 +28,11 @@ export const getGroupMessages = wrapAsyncHandler(async (req,res) => {
 });
 
 export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
-    const {id} = req.parans;
+    // console.log("in backend");
+    const {groupId} = req.params;
+    const id = groupId;
+    console.log("body: ");
+    console.log(req.body);
     const {text} = req.body;
     const {path,filename} = req.file || {};
     if(!text && !path) {
