@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { useAuthStore } from "../store/useAuthStore";
 import { useChatStore } from "../store/useChatStore";
 
+// import {initializeSocket} from '../store/useChatStore.js';
 import Sidebar from "../Components/Sidebar";
 import NoChatSelected from "../Components/NoChatSelected";
 import ChatContainer from "../Components/ChatContainer";
-import CreateGroup from "../Components/CreateGroup";
-
 export default function HomePage() {
-    const { selectedUser, selectedGroup,createGroup } = useChatStore();
+    const { selectedUser, selectedGroup,initializeSocket } = useChatStore();
     const { authUser } = useAuthStore();
-    const [showCreateGroup, setShowCreateGroup] = useState(false);
-
+    React.useEffect(() => {
+        if(authUser) {
+            initializeSocket();
+        }
+    },[authUser,initializeSocket]);
     return (
         <div className="h-screen bg-base-200">
             <div className="flex items-center justify-center pt-20 px-4">

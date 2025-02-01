@@ -17,7 +17,11 @@ const userSchema = new Schema({
             url: String,
             filename: String
         }
-    }
+    },
+    groups: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Group'
+    }]
 }, {timestamps: true})
 
 userSchema.plugin(passportLocalMongoose,{usernameField: 'email'});

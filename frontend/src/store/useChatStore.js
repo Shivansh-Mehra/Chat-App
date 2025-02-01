@@ -13,10 +13,19 @@ export const useChatStore = create((set,get) => ({
     isMessagesLoading: false,
     isGroupsLoading: false,
 
+    initializeSocket: () => {
+        const socket = useAuthStore.getState().socket;
+        socket.on("join-group",(groupId) => {
+            // socket.join(groupId);
+            console.log("Joining group",groupId);
+            socket.emit("join-group",groupId);
+        })
+    },
+
     createGroup: async (name,members) => { //works
         try {
-            const res = await axiosInstance.post('/group/create', {name,members});
-
+            await axiosInstance.post('/group/create', {name,members});
+            // console.log(res);
             toast.success("Group created successfully");
         } catch(err) {
             toast.error("Failed to create group");
@@ -98,30 +107,29 @@ export const useChatStore = create((set,get) => ({
                 messages: [...state.messages, newMessage],
             }));
         } catch (err) {
+            console.log(err);
             toast.error("Failed to send message");
         } 
     },
 
     sendGroupMessage: async (formData) => {
         try {
-            console.log('Form Data:', Array.from(formData.entries())); // Debugging statement
-            const res = await axiosInstance.post('/group/' + formData.get('groupId') + '/message', formData, {
+            await axiosInstance.post('/group/' + formData.get('groupId') + '/message', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            console.log("HERE");
-            const newMessage = res ? res.data : '';
-            if(newMessage === '') return;
-            const authUser = useAuthStore.getState().authUser;
-            newMessage.senderId = {
-                _id: authUser._id,
-                username: authUser.username,
-                profilePic: authUser.profilePic,
-            };
-            set((state) => ({
-                messages: [...state.messages, newMessage],
-            }));
+            // const newMessage = res ? res.data : '';
+            // if(newMessage === '') return;
+            // const authUser = useAuthStore.getState().authUser;
+            // newMessage.senderId = {
+            //     _id: authUser._id,
+            //     username: authUser.username,
+            //     profilePic: authUser.profilePic,
+            // };
+            // set((state) => ({
+            //     messages: [...state.messages, newMessage],
+            // }));
         } catch (err) {
             console.log(err);
             toast.error("Failed to send message");
@@ -134,6 +142,7 @@ export const useChatStore = create((set,get) => ({
 
         if (selectedUser) {
             socket.on("newMessage", (msg) => {
+                console.log("here rn");
                 const isMessageSentFromSelectedUser = msg.senderId === selectedUser._id;
                 if (!isMessageSentFromSelectedUser) return;
 
@@ -152,5 +161,6 @@ export const useChatStore = create((set,get) => ({
     unsubscribeFromMessages: () => {
         const socket = useAuthStore.getState().socket;
         socket.off("newMessage");
+        socket.off("newGroupMessage");
     },
 }))

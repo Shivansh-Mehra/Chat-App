@@ -30,7 +30,7 @@ export default function ChatHeader() {
             </div>
 
             <div>
-                <X className="w-6 h-6 cursor-pointer" onClick={() => {setSelectedUser(null); setSelectedGroup(null)}} />
+                <X className="w-6 h-6 cursor-pointer" onClick={() => {setSelectedUser(null); setSelectedGroup(null);}} />
             </div>
         </div>
     )
