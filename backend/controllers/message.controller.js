@@ -44,7 +44,7 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
         image = null;
     }
     try {
-        const msg = await new Message({senderId: req.user._id,receiverId: id,message: text,image});
+        let msg = await new Message({senderId: req.user._id,receiverId: id,message: text,image});
         // let msg = new Message({
         //     senderId: req.user._id,
         //     receiverId: id,
@@ -52,11 +52,17 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
         //     image
         // });
         await msg.save();
-        // msg = await msg.populate('senderId','username profilePic');
-        const receiverSocketId = getReceiverSocketId(id);
+        msg = await msg.populate('senderId','username profilePic');
+        const receiverSocketId = getReceiverSocketId(id);        
         console.log(receiverSocketId);
+        const senderSocketId = getReceiverSocketId(req.user._id);
         if(receiverSocketId) {
-            io.to(receiverSocketId).emit("newMessage",msg);
+            console.log(msg);
+            io.to(receiverSocketId).emit("newMessage",msg);        
+        }
+
+        if(senderSocketId) {
+            io.to(senderSocketId).emit("newMessage",msg);
         }
 
         res.status(200).json(msg);

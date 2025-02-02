@@ -85,7 +85,6 @@ export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
         image = null;
     }
     try {
-        // const msg = new Message({senderId: req.user._id,groupId: id,message: text,image});
         let msg = new Message({
             senderId: req.user._id,
             groupId,
@@ -94,7 +93,6 @@ export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
         });
         await msg.save();
         msg = await msg.populate('senderId', 'username profilePic');
-        //add websocket code here
         io.to(id).emit("newGroupMessage",msg);
         res.status(200).json(msg);
     } catch(err) {
