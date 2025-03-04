@@ -109,4 +109,14 @@ export const getGroups = wrapAsyncHandler (async (req,res) => {
     } catch(err) {
         res.status(500).send("Error fetching groups");
     }
-})
+});
+
+export const getGroupMembers = wrapAsyncHandler(async (req,res) => {
+    const {groupId} = req.params;
+    try {
+        const members = await User.find({groups: groupId}); //gets users in which the groups array contains groupId
+        res.status(200).json(members);
+    } catch(err) {
+        res.status(500).send("Error fetching group members"); 
+    }
+});

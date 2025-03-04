@@ -12,6 +12,9 @@ export const useChatStore = create((set,get) => ({
     isUsersLoading: false,
     isMessagesLoading: false,
     isGroupsLoading: false,
+    showMembers: false,
+    members: [],
+    isMembersLoading: false,
 
     initializeSocket: () => {
         const socket = useAuthStore.getState().socket;
@@ -79,6 +82,17 @@ export const useChatStore = create((set,get) => ({
             set({isGroupsLoading: false});
         }
     },
+    getGroupMembers: async(groupId) => {
+        set({isMembersLoading: true});
+        try {
+            const res = await axiosInstance.get('/group/'+groupId+'/members');
+            set({members: res.data});
+        } catch(err) {
+            toast.error("Failed to fetch members");
+        } finally {
+            set({isMembersLoading: false});
+        }
+    },
 
     setSelectedUser: (userId) => {
         set({selectedUser: userId});
@@ -86,6 +100,9 @@ export const useChatStore = create((set,get) => ({
 
     setSelectedGroup: (groupId) => {
         set({selectedGroup: groupId});
+    },
+    setShowMembers: (val) => {
+        set({showMembers: val});
     },
 
     sendMessage: async(formData) => {

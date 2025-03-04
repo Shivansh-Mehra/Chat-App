@@ -49,7 +49,6 @@ export const useAuthStore = create((set,get) => ({
             set({authUser: null});
             get().disconnectSocket();
         } catch (err) {
-
             toast.error("Failed to log out");
         }
     },

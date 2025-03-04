@@ -6,10 +6,12 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from './skeleton/MessageSkeleton';
 import defaultProfilePic from '../assets/default_insta.jpg';
 import { formatMessageTime } from '../lib/times'; 
+import DisplayMembers from './displayMembers';
+
 export default function ChatContainer() {
   const messageEndRef = React.useRef(null);
   const {authUser} = useAuthStore();
-  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubscribeFromMessages,getGroupMessages,selectedGroup} = useChatStore();  
+  const {selectedUser,messages,getMessages,isMessagesLoading,subscribeToMessages,unsubscribeFromMessages,getGroupMessages,selectedGroup,showMembers,setShowMembers} = useChatStore();  
   React.useEffect(() => {
     if(selectedUser) {
       getMessages(selectedUser._id);
@@ -29,7 +31,7 @@ export default function ChatContainer() {
     if(messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({behavior: 'smooth'});
     }
-  },[messages]);
+  },[messages,showMembers,setShowMembers]);
 
   if(isMessagesLoading) return (
     <div className="w-full h-full flex flex-col flex-1 overflow-auto">
@@ -38,9 +40,25 @@ export default function ChatContainer() {
       <MessageInput />
     </div>
   )
+
+  if(showMembers && selectedGroup) {
+    return (
+      <div className="w-full h-full flex flex-col overflow-auto">
+      <div onClick={() => { setShowMembers(false); console.log(showMembers)}} className="cursor-pointer p-4">
+        <h2 className="text-xl font-semibold text-blue-500 hover:text-blue-600">
+        &larr; Back to Chat
+        </h2>
+      </div>
+      <DisplayMembers groupId={selectedGroup._id} />
+      </div>
+    )
+  }
+
   return (
     <div className="w-full h-full flex flex-col flex-1 overflow-auto">
-      <ChatHeader />
+      <div onClick={selectedGroup ? () => setShowMembers(true) : undefined} className={`${selectedGroup ? 'cursor-pointer hover:bg-gray-100' : ''}`}>
+        <ChatHeader />
+      </div>
       <div className='flex-grow overflow-y-auto'>
         {Array.isArray(messages) && messages &&  messages.map((msg) => (
           <div key={msg._id} className={`chat ${msg.senderId._id !== authUser._id ? 'chat-start' : 'chat-end'}`} ref={messageEndRef}>
