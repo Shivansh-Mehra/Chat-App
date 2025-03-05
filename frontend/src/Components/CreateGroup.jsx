@@ -1,17 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useChatStore } from '../store/useChatStore';
+import { useAuthStore } from '../store/useAuthStore';
 
-export default function CreateGroup() {
+export default function CreateGroup({ func }) {
+    const { createGroup, getUsers, users } = useChatStore();
+    const { authUser } = useAuthStore();
     const [name, setName] = useState('');
-    const [members, setMembers] = useState('');
-    const { createGroup } = useChatStore();
+    const [selectedUserIds, setSelectedUserIds] = useState([authUser._id]);
+
+    useEffect(() => {
+        getUsers();
+    }, [getUsers]);
+
+    const toggleUserSelection = (userId) => {
+        setSelectedUserIds(prev =>
+            prev.includes(userId)
+                ? prev.filter(id => id !== userId)
+                : [...prev, userId]
+        );
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const membersArray = members.split(',').map(member => member.trim());
-        await createGroup(name, membersArray);
-        setName('');
-        setMembers('');
+        if (!name.trim() || selectedUserIds.length === 0) return;
+        try {
+            console.log("Creating group with:", name, selectedUserIds);
+            await createGroup(name, selectedUserIds);
+            console.log("Group created successfully");
+            // Reset fields on success
+            setName('');
+            setSelectedUserIds([authUser._id]);
+            // Close the modal by calling the callback
+            if (typeof func === 'function') {
+                console.log("Closing modal");
+                func(false);
+            }
+        } catch (error) {
+            console.error('Error creating group:', error);
+        }
     };
 
     return (
@@ -31,17 +57,26 @@ export default function CreateGroup() {
                 />
             </div>
             <div>
-                <label htmlFor="members" className="block text-sm font-medium text-gray-700">
-                    Members (comma-separated user IDs)
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Select Members
                 </label>
-                <input
-                    type="text"
-                    id="members"
-                    value={members}
-                    onChange={(e) => setMembers(e.target.value)}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
-                    required
-                />
+                <div className="max-h-60 overflow-y-auto border rounded p-2">
+                    {users &&
+                        users
+                            .filter(user => user._id !== authUser._id)
+                            .map(user => (
+                                <div
+                                    key={user._id}
+                                    onClick={() => toggleUserSelection(user._id)}
+                                    className={`cursor-pointer p-2 rounded ${
+                                        selectedUserIds.includes(user._id) ? 'bg-blue-100' : 'hover:bg-gray-100'
+                                    }`}
+                                >
+                                    <p className="text-sm font-medium">{user.username}</p>
+                                    <p className="text-xs text-gray-500">{user.email}</p>
+                                </div>
+                            ))}
+                </div>
             </div>
             <button
                 type="submit"

@@ -19,17 +19,16 @@ export const useChatStore = create((set,get) => ({
     initializeSocket: () => {
         const socket = useAuthStore.getState().socket;
         socket.on("join-group",(groupId) => {
-            // socket.join(groupId);
             console.log("Joining group",groupId);
             socket.emit("join-group",groupId);
         })
     },
 
-    createGroup: async (name,members) => { //works
+    createGroup: async (name,members) => { 
         try {
             await axiosInstance.post('/group/create', {name,members});
-            // console.log(res);
             toast.success("Group created successfully");
+            return;
         } catch(err) {
             toast.error("Failed to create group");
         }
@@ -91,6 +90,32 @@ export const useChatStore = create((set,get) => ({
             toast.error("Failed to fetch members");
         } finally {
             set({isMembersLoading: false});
+        }
+    },
+    addGroupMember: async (groupId, userId) => {
+        try {
+            const previousMembers = get().members;
+            const allUsers = get().users;
+            const newUser = allUsers.find(u => u._id === userId);
+            if (newUser) {
+                set({ members: [...previousMembers, newUser] });
+            }
+            await axiosInstance.post(`/group/${groupId}/addMember`, { memberId: userId });
+            toast.success("Member added successfully");
+        } catch (err) {
+            set({ members: get().members });
+            toast.error("Failed to add member");
+        }
+    },
+    leaveGroup: async (groupId, userId) => {
+        try {
+            const previousMembers = get().members;
+            set({ members: previousMembers.filter(member => member._id !== userId) });
+            await axiosInstance.post(`/group/${groupId}/leave`, { userId });
+            toast.success("Left group successfully");
+        } catch (err) {
+            set({ members: get().members });
+            toast.error("Failed to leave group");
         }
     },
 

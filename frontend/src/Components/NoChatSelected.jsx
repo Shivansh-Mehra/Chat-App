@@ -24,7 +24,7 @@ const NoChatSelected = () => {
             >
               &times;
             </button>
-            <CreateGroup />
+            <CreateGroup func={setShowCreateGroup} />
           </div>
         </div>
       )}

@@ -120,3 +120,51 @@ export const getGroupMembers = wrapAsyncHandler(async (req,res) => {
         res.status(500).send("Error fetching group members"); 
     }
 });
+
+export const addMember = wrapAsyncHandler(async (req,res) => {
+    console.log("here");
+    const {groupId} = req.params;
+    const {memberId} = req.body;
+    try {
+        const group = await Group.find({ _id: groupId });
+        if(!group) {
+            res.status(404).send("Group not found");
+            return;
+        }
+        await User.updateOne(
+            { _id: memberId },
+            { $push: { groups: groupId } }
+        );
+        await Group.updateOne(
+            { _id: groupId },
+            { $push: { members: memberId } }
+        );
+        console.log(group);
+        res.status(200).send("Member added successfully");
+    } catch(err) {
+        res.status(500).send("Error adding member");
+    }
+});
+
+export const leaveGroup = wrapAsyncHandler(async (req,res) => {
+    const {groupId} = req.params;
+    const {userId} = req.body;
+    try {
+        const group = await Group.find({ _id: groupId });
+        if(!group) {
+            res.status(404).send("Group not found");
+            return;
+        }
+        await User.updateOne(
+            { _id: userId },
+            { $pull: { groups: groupId } }
+        );
+        await Group.updateOne(
+            { _id: groupId },
+            { $pull: { members: userId } }
+        );
+        res.status(200).send("Left group successfully");
+    } catch(err) {
+        res.status(500).send("Error while leaving group");
+    }
+})
