@@ -99,7 +99,7 @@ export const updateProfile = wrapAsyncHandler(async(req,res) => {
 
 export const checkStatus = (req,res) => {
     if(req.isAuthenticated()) {
-        res.send(req.user);
+        res.status(200).send(req.user);
     } else {
         res.status(401).send("You are not logged in");
     }
