@@ -30,6 +30,7 @@ io.on("connection",(socket) => {
     const userId = socket.handshake.query.userId;
     if(!userId || userId === "undefined") {
         // socket.disconnect();
+        console.log(socket.handshake.query);
         console.log("jjnca");
         return;
     }
