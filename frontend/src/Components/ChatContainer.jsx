@@ -6,7 +6,7 @@ import MessageInput from "./MessageInput";
 import MessageSkeleton from './skeleton/MessageSkeleton';
 import defaultProfilePic from '../assets/default_insta.jpg';
 import { formatMessageTime } from '../lib/times'; 
-import DisplayMembers from './displayMembers';
+import DisplayMembers from './DisplayMembers';
 
 export default function ChatContainer() {
   const messageEndRef = React.useRef(null);
