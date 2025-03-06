@@ -4,14 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.join(path.dirname(__filename), '..');
-if(process.env.NODE_ENV === "production") {
-    dotenv.config();
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
-      });
-}
+dotenv.config();
 import express from 'express';
 import authRouter from '../routes/auth.routes.js';
 import groupRouter from '../routes/group.routes.js';
@@ -76,6 +69,15 @@ app.use((req,res,next) => {
 app.use('/api/auth',authRouter);
 app.use('/api/message',messageRouter);
 app.use('/api/group',groupRouter);
+
+
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+      });
+}
 
 //server start
 server.listen(port,() => {});
