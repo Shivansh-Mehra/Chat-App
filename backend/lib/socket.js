@@ -26,7 +26,6 @@ export function getGroupSocketId(groupId) {
 
 
 io.on("connection",(socket) => {
-    console.log('connected',socket.id);
     
     const userId = socket.handshake.query.userId;
     if(userId) userSocketMap[userId] = socket.id;
@@ -45,22 +44,15 @@ io.on("connection",(socket) => {
         }
     })();
 
-    socket.on("join-group",groupId => { //this is not getting called correctly, fix later.
+    socket.on("join-group",groupId => { 
         socket.join(groupId);
-        console.log(`Socket ${socket.id} joined group ${groupId}`);
     });
-
-    // socket.on("leave-group",id => {
-    //     socket.leave(id);
-    //     console.log(`Socket ${socket.id} left group ${id}`);
-    // });
 
     socket.on("sendGroupMessage",({groupId,message}) => {
         io.to(groupId).emit("receiveGroupMessage",message);
     });
 
     socket.on('disconnect',() => {
-        console.log('disconnected',socket.id);
         delete userSocketMap[userId];
         socket.leaveAll();
         io.emit("getOnlineUsers",Object.keys(userSocketMap)); //make sure "whatever is here matches the frontend"

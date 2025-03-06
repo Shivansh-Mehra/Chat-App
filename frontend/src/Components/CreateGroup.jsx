@@ -24,19 +24,20 @@ export default function CreateGroup({ func }) {
         e.preventDefault();
         if (!name.trim() || selectedUserIds.length === 0) return;
         try {
-            console.log("Creating group with:", name, selectedUserIds);
             await createGroup(name, selectedUserIds);
-            console.log("Group created successfully");
-            // Reset fields on success
             setName('');
             setSelectedUserIds([authUser._id]);
-            // Close the modal by calling the callback
             if (typeof func === 'function') {
-                console.log("Closing modal");
                 func(false);
             }
         } catch (error) {
-            console.error('Error creating group:', error);
+            //console.log(error);
+            setName('');
+            setSelectedUserIds([authUser._id]);
+            if (typeof func === 'function') {
+                func(false);
+            }
+            
         }
     };
 

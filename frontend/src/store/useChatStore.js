@@ -19,7 +19,6 @@ export const useChatStore = create((set,get) => ({
     initializeSocket: () => {
         const socket = useAuthStore.getState().socket;
         socket.on("join-group",(groupId) => {
-            console.log("Joining group",groupId);
             socket.emit("join-group",groupId);
         })
     },
@@ -140,7 +139,6 @@ export const useChatStore = create((set,get) => ({
             });
             set({messages: [...messages, res.data]});
         } catch (err) {
-            console.log(err);
             toast.error("Failed to send message");
         } 
     },
@@ -153,7 +151,6 @@ export const useChatStore = create((set,get) => ({
                 },
             });
         } catch (err) {
-            console.log(err);
             toast.error("Failed to send message");
         }
     },
@@ -164,7 +161,6 @@ export const useChatStore = create((set,get) => ({
 
         if (selectedUser) {
             socket.on("newMessage", (msg) => {
-                console.log("here rn");
                 const isMessageSentFromSelectedUser = msg.senderId._id === selectedUser._id;
                 if (!isMessageSentFromSelectedUser) return;
 

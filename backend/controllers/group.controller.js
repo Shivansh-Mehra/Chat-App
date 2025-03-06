@@ -122,7 +122,6 @@ export const getGroupMembers = wrapAsyncHandler(async (req,res) => {
 });
 
 export const addMember = wrapAsyncHandler(async (req,res) => {
-    console.log("here");
     const {groupId} = req.params;
     const {memberId} = req.body;
     try {
@@ -139,7 +138,6 @@ export const addMember = wrapAsyncHandler(async (req,res) => {
             { _id: groupId },
             { $push: { members: memberId } }
         );
-        console.log(group);
         res.status(200).send("Member added successfully");
     } catch(err) {
         res.status(500).send("Error adding member");

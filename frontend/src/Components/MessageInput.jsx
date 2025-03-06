@@ -44,11 +44,11 @@ export default function MessageInput() {
 
         if (selectedUser) {
             formData.append('receiverId', selectedUser._id);
-            console.log('Message Form Data:', Array.from(formData.entries())); // Debugging statement
+            // console.log('Message Form Data:', Array.from(formData.entries())); // Debugging statement
             await sendMessage(formData);
         } else if (selectedGroup) {
             formData.append('groupId', selectedGroup._id);
-            console.log('Group Message Form Data:', Array.from(formData.entries())); // Debugging statement
+            // console.log('Group Message Form Data:', Array.from(formData.entries())); // Debugging statement
             await sendGroupMessage(formData);
         }
 

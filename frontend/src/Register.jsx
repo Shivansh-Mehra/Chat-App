@@ -22,7 +22,6 @@ export default function Register({loginStatus,func}) {
                 body: JSON.stringify(user),
             });
             if (response.ok) {
-                console.log('Registration successful');
                 localStorage.setItem('isLoggedIn', 'true');
                 window.location.href = '/';
             } else {
@@ -39,7 +38,7 @@ export default function Register({loginStatus,func}) {
         <div className="flex items-center justify-center h-screen">
             <div className="w-full max-w-sm p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
                 <form className="space-y-6" action="/users/register" method="POST" onSubmit={handleSubmit}>
-                    <h5 className="text-xl font-medium text-gray-900 dark:text-white">Sign up with ChatRoom</h5>
+                    <h5 className="text-xl font-medium text-gray-900 dark:text-white">Sign up with ChatSphere</h5>
                     <div>
                         <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your username</label>
                         <input onChange={handleChange} value={user.username} type="text" name="username" id="username" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="Your username" required />

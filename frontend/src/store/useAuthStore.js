@@ -35,7 +35,6 @@ export const useAuthStore = create((set,get) => ({
             set({authUser: signedUp.data});
             get().connectSocket();
         } catch (err) {
-            console.log(err);
             toast.error("Failed to sign up");
         } finally {
             set({isSigningUp: false});

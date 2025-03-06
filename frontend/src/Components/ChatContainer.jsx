@@ -15,11 +15,9 @@ export default function ChatContainer() {
   React.useEffect(() => {
     if(selectedUser) {
       getMessages(selectedUser._id);
-      console.log("selectedUser",selectedUser);
     }
     if(selectedGroup) {
       getGroupMessages(selectedGroup._id);
-      console.log("selectedGroup",selectedGroup);
     }
 
     subscribeToMessages();
@@ -44,7 +42,7 @@ export default function ChatContainer() {
   if(showMembers && selectedGroup) {
     return (
       <div className="w-full h-full flex flex-col overflow-auto">
-      <div onClick={() => { setShowMembers(false); console.log(showMembers)}} className="cursor-pointer p-4">
+      <div onClick={() => { setShowMembers(false);}} className="cursor-pointer p-4">
         <h2 className="text-xl font-semibold text-blue-500 hover:text-blue-600">
         &larr; Back to Chat
         </h2>

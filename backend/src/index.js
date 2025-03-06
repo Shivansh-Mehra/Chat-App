@@ -80,7 +80,5 @@ app.get('/',(req,res) => {
 })
 
 //server start
-server.listen(port,() => {
-    console.log("server running on "+port);
-})
+server.listen(port,() => {});
 

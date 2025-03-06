@@ -54,10 +54,8 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
         await msg.save();
         msg = await msg.populate('senderId','username profilePic');
         const receiverSocketId = getReceiverSocketId(id);        
-        console.log(receiverSocketId);
         const senderSocketId = getReceiverSocketId(req.user._id);
         if(receiverSocketId) {
-            console.log(msg);
             io.to(receiverSocketId).emit("newMessage",msg);        
         }
 
@@ -67,7 +65,6 @@ export const sendMessage = wrapAsyncHandler(async (req,res) => {
 
         res.status(200).json(msg);
     } catch(err) {
-        console.log(err);
         res.status(500).send("Error sending message");
     }
 }
