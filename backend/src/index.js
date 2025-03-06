@@ -20,10 +20,10 @@ import cors from 'cors';
 import {app,server} from '../lib/socket.js';
 if(process.env.NODE_ENV === "production") {
     dotenv.config();
-    app.use(express.static(path.join(__dirname, '/frontend/dist')));
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
     app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, '/frontend/dist/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
     });
 }
 //connecting to Db
