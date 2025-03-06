@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-if(process.env.NODE_ENV !== "production") {
-    dotenv.config();
-}
-
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.join(path.dirname(__filename), '..');
 import express from 'express';
+import path from 'path';
 import authRouter from '../routes/auth.routes.js';
 import groupRouter from '../routes/group.routes.js';
 const port = process.env.PORT || 3000;
@@ -18,9 +18,14 @@ import connectToDatabase from '../lib/db.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import {app,server} from '../lib/socket.js';
+if(process.env.NODE_ENV === "production") {
+    dotenv.config();
+    app.use(express.static(path.join(__dirname, '/frontend/dist')));
 
-// const app = express();
-
+    app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, '/frontend/dist/index.html'));
+    });
+}
 //connecting to Db
 connectToDatabase(DB_URL);
 
@@ -53,9 +58,6 @@ app.use(session({
 //passport auth
 app.use(passport.initialize());
 app.use(passport.session());
-// passport.use(new localStrategy(User.authenticate()));
-// passport.use(User.createStrategy());
-// passport.use(new localStrategy(User.authenticate()));
 passport.use(new localStrategy({
     usernameField: 'email',
     passwordField: 'password'

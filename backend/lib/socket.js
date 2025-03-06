@@ -28,12 +28,18 @@ export function getGroupSocketId(groupId) {
 io.on("connection",(socket) => {
     
     const userId = socket.handshake.query.userId;
+    if(!userId || userId === "undefined") {
+        // socket.disconnect();
+        console.log("jjnca");
+        return;
+    }
     if(userId) userSocketMap[userId] = socket.id;
     io.emit("getOnlineUsers",Object.keys(userSocketMap));
     
     (async () => {
         try {
-            const user = await User.findById(userId);
+            let user;
+            if(userId) user = await User.findById(userId);
             if (user && user.groups) {
                 user.groups.forEach(groupId => {
                     io.emit("join-group",groupId);
