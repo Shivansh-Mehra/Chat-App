@@ -1,13 +1,22 @@
 import dotenv from 'dotenv';
+import {app,server} from '../lib/socket.js';
 import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.join(path.dirname(__filename), '..');
+if(process.env.NODE_ENV === "production") {
+    dotenv.config();
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
+    app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+    });
+}
 import express from 'express';
 import path from 'path';
 import authRouter from '../routes/auth.routes.js';
 import groupRouter from '../routes/group.routes.js';
-const port = process.env.PORT || 3000;
-const DB_URL = process.env.DB_URL
+const port = process.env.PORT || 8080;
+const DB_URL = process.env.DB_URL;
 import passport from 'passport';
 import localStrategy from 'passport-local';
 import messageRouter from '../routes/message.routes.js';
@@ -17,15 +26,6 @@ import User from '../models/user.model.js';
 import connectToDatabase from '../lib/db.js';   
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import {app,server} from '../lib/socket.js';
-if(process.env.NODE_ENV === "production") {
-    dotenv.config();
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
-
-    app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-    });
-}
 //connecting to Db
 connectToDatabase(DB_URL);
 
@@ -76,10 +76,6 @@ app.use((req,res,next) => {
 app.use('/api/auth',authRouter);
 app.use('/api/message',messageRouter);
 app.use('/api/group',groupRouter);
-
-app.get('/',(req,res) => {
-    res.send("Home");
-})
 
 //server start
 server.listen(port,() => {});
