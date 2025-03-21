@@ -2,7 +2,8 @@ import wrapAsyncHandler from "../lib/wrapAsyncHandler.js";
 import Message from "../models/message.model.js";
 import Group from "../models/group.model.js";
 import User from '../models/user.model.js';
-import {io,getReceiverSocketId} from '../lib/socket.js'
+import { io, getReceiverSocketId } from '../lib/socket.js';
+import redisClient from '../lib/client.js';
 
 export const createGroup = wrapAsyncHandler(async (req, res) => {
     const { name, members } = req.body;
@@ -19,10 +20,10 @@ export const createGroup = wrapAsyncHandler(async (req, res) => {
             { $push: { groups: group._id } }
         );
 
-        for(let member of members) {
+        for (let member of members) {
             const socketID = getReceiverSocketId(member);
-            if(socketID) {
-                io.to(socketID).emit("join-group",group._id);
+            if (socketID) {
+                io.to(socketID).emit("join-group", group._id);
             }
         }
     } catch (err) {
@@ -57,34 +58,38 @@ export const deleteGroup = async (req, res) => {
 };
 
 
-export const getGroupMessages = wrapAsyncHandler(async (req,res) => {
-    const {groupId} = req.params;
+export const getGroupMessages = wrapAsyncHandler(async (req, res) => {
+    const { groupId } = req.params;
     try {
-        const messages = await Message.find({groupId}).populate('senderId','username profilePic').sort({createdAt: 1});
+const cachedMessages = await redisClient.get(`groupMessages:${groupId}`);
+        if (cachedMessages) {
+            return res.status(200).json(JSON.parse(cachedMessages));
+        }
+        const messages = await Message.find({ groupId }).populate('senderId', 'username profilePic').sort({ createdAt: 1 });
+await redisClient.set(`groupMessages:${groupId}`, JSON.stringify(messages), 'EX', 3600);
         res.status(200).json(messages);
-    } catch(err) {
+    } catch (err) {
         res.status(500).send("Error while fetching messages");
     }
 });
 
-export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
-    // console.log("in backend");
-    const {groupId} = req.params;
+export const sendGroupMessage = wrapAsyncHandler(async (req, res) => {
+        const { groupId } = req.params;
     const id = groupId;
-    const {text} = req.body;
-    const {path,filename} = req.file || {};
-    if(!text && !path) {
-        res.status(400).send("Message or image is required");
+    const { text } = req.body;
+   const { path, filename } = req.file || {};
+   if (!text && !path) {
+       res.status(400).send("Message or image is required");
         return;
     }
     let image;
-    if(path) {
-        image = {url: path,filename};
+    if (path) {
+        image = { url: path, filename };
     }
-    if(!path) {
-        image = null;
+    if (!path) {
+       image = null;
     }
-    try {
+try {
         let msg = new Message({
             senderId: req.user._id,
             groupId,
@@ -93,40 +98,39 @@ export const sendGroupMessage = wrapAsyncHandler(async (req,res) => {
         });
         await msg.save();
         msg = await msg.populate('senderId', 'username profilePic');
-        io.to(id).emit("newGroupMessage",msg);
+        io.to(id).emit("newGroupMessage", msg);
+await redisClient.del(`groupMessages:${groupId}`);
         res.status(200).json(msg);
-    } catch(err) {
+    } catch (err) {
         res.status(500).send("Error sending message");
     }
 });
 
-export const getGroups = wrapAsyncHandler (async (req,res) => {
+export const getGroups = wrapAsyncHandler(async (req, res) => {
     try {
-        // console.log(req.user._id);
-        const groups = await Group.find({members: {$in: [req.user._id]}});
-        // console.log(groups);
-        res.status(200).json(groups);
-    } catch(err) {
+                const groups = await Group.find({ members: { $in: [req.user._id] } });
+                res.status(200).json(groups);
+    } catch (err) {
         res.status(500).send("Error fetching groups");
     }
 });
 
-export const getGroupMembers = wrapAsyncHandler(async (req,res) => {
-    const {groupId} = req.params;
+export const getGroupMembers = wrapAsyncHandler(async (req, res) => {
+    const { groupId } = req.params;
     try {
-        const members = await User.find({groups: groupId}); //gets users in which the groups array contains groupId
+        const members = await User.find({ groups: groupId });
         res.status(200).json(members);
-    } catch(err) {
+    } catch (err) {
         res.status(500).send("Error fetching group members"); 
     }
 });
 
-export const addMember = wrapAsyncHandler(async (req,res) => {
-    const {groupId} = req.params;
-    const {memberId} = req.body;
+export const addMember = wrapAsyncHandler(async (req, res) => {
+    const { groupId } = req.params;
+    const { memberId } = req.body;
     try {
         const group = await Group.find({ _id: groupId });
-        if(!group) {
+        if (!group) {
             res.status(404).send("Group not found");
             return;
         }
@@ -139,17 +143,17 @@ export const addMember = wrapAsyncHandler(async (req,res) => {
             { $push: { members: memberId } }
         );
         res.status(200).send("Member added successfully");
-    } catch(err) {
+    } catch (err) {
         res.status(500).send("Error adding member");
     }
 });
 
-export const leaveGroup = wrapAsyncHandler(async (req,res) => {
-    const {groupId} = req.params;
-    const {userId} = req.body;
+export const leaveGroup = wrapAsyncHandler(async (req, res) => {
+    const { groupId } = req.params;
+    const { userId } = req.body;
     try {
         const group = await Group.find({ _id: groupId });
-        if(!group) {
+        if (!group) {
             res.status(404).send("Group not found");
             return;
         }
@@ -162,7 +166,7 @@ export const leaveGroup = wrapAsyncHandler(async (req,res) => {
             { $pull: { members: userId } }
         );
         res.status(200).send("Left group successfully");
-    } catch(err) {
+    } catch (err) {
         res.status(500).send("Error while leaving group");
     }
-})
+});
