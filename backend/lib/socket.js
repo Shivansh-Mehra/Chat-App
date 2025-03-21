@@ -8,7 +8,7 @@ const server = http.createServer(app);
 
 const io = new Server(server,{
     cors: {
-        origin: process.env.NODE_ENV === "development" ? ['http://localhost:5173'] : ["http://localhost:80"]
+        origin: process.env.NODE_ENV === "development" ? ['http://localhost:5173'] : ["http://localhost"]
     }
 })
 //store online users
