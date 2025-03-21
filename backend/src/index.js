@@ -25,7 +25,7 @@ connectToDatabase(DB_URL);
 
 //config
 app.use(cors({
-    origin: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "http://localhost",
+    origin: "http://localhost:5173",
     credentials: true
 }));
 app.use(express.urlencoded({ extended: true }));
