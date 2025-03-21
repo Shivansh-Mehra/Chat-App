@@ -14,8 +14,6 @@ import passport from 'passport';
 import localStrategy from 'passport-local';
 import messageRouter from '../routes/message.routes.js';
 import session from 'express-session';
-import connectRedis from 'connect-redis';
-import redisClient from '../lib/client.js';
 import MongoStore from 'connect-mongo';
 import User from '../models/user.model.js';
 import connectToDatabase from '../lib/db.js';
@@ -34,12 +32,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser(process.env.SECRET));
 
-const RedisStore = connectRedis(session);
+const sessionStore = MongoStore.create({
+    mongoUrl: DB_URL
+})
 
 app.use(session({
-    store: new RedisStore({ client: redisClient }),
     secret: process.env.SECRET,
     resave: false,
+    store: sessionStore,
     saveUninitialized: false,
     cookie: {
         httpOnly: true,
