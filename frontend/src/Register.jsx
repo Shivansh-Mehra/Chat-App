@@ -1,6 +1,5 @@
 import React from 'react';
 import NavBar from './Components/NavBar';
-const API_URL = process.env.NODE_ENV === "development" ? "http://localhost:8080/users/register" : "http://localhost:8080/users/register";
 
 export default function Register({loginStatus,func}) {
     const [user, setUser] = React.useState({ username: "", email: "", password: "", remember: false });
@@ -15,7 +14,7 @@ export default function Register({loginStatus,func}) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(API_URL, {
+            const response = await fetch('http://localhost:3000/users/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

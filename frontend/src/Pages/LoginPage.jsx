@@ -1,15 +1,12 @@
 import React from 'react'
-import { MessageSquare, User, Mail, Lock, Eye, EyeOff, Loader2 } from 'lucide-react'
+import {MessageSquare,User,Mail,Lock,Eye,EyeOff,Loader2} from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore';
 import AuthImagePattern from '../Components/AuthImagePattern';
 import toast from 'react-hot-toast'
-import { Link } from 'react-router-dom'; // added import for Link
-
 export default function LoginPage() {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const [user, setUser] = React.useState({ email:"", password:"" });
-    const { login, isLoggingIn } = useAuthStore();
-
+    const [showPassword,setShowPassword] = React.useState(false);
+    const [user,setUser] = React.useState({email:"",password:""});
+    const {login,isLoggingIn} = useAuthStore();
     const handleChange = (e) => {
         setUser({
             ...user,
@@ -45,15 +42,17 @@ export default function LoginPage() {
                 <div className='w-full max-w-md space-y-8'>
                     <div className="text-center mb-8">
                         <div className="flex flex-col items-center gap-2 group">
-                            <div className="size-14 rounded-xl bg-primary/10 flex items-center justify-center 
-                                    group-hover:bg-primary/20 transition-colors">
-                                <MessageSquare className="size-6 text-primary" />
-                            </div>
-                            <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
-                            <p className="text-base-content/60">Sign into your account</p>
+                        <div
+                            className="size-14 rounded-xl bg-primary/10 flex items-center justify-center 
+                        group-hover:bg-primary/20 transition-colors"
+                        >
+                            <MessageSquare className="size-6 text-primary" />
+                        </div>
+                        <h1 className="text-2xl font-bold mt-2">Welcome Back</h1>
+                        <p className="text-base-content/60">Sign into your account</p>
                         </div>
                     </div>
-                    {/* form */}
+                    {/*form*/}
                     <form onSubmit={handleSubmit} className='space-y-6'>
                         <div className="form-control">
                             <label className="label">
@@ -97,27 +96,20 @@ export default function LoginPage() {
                         <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full" disabled={isLoggingIn}>
                             {isLoggingIn ? (
                                 <>
-                                    <Loader2 className="size-5 animate-spin" />
-                                    Loading...
+                                <Loader2 className="size-5 animate-spin" />
+                                Loading...
                                 </>
                             ) : (
                                 "Login"
                             )}
                         </button>
                     </form>
-                    {/* Sign up option */}
-                    <p className="text-center mt-4 text-sm">
-                        Don't have an account?{" "}
-                        <Link to="/signup" className="text-blue-500 underline">
-                            Sign up
-                        </Link>
-                    </p>
                 </div>
             </div>
-            {/* right side */}
+            {/*right side*/}
             <AuthImagePattern 
                 title="Welcome Back!"
-                subtitle="Sign in to continue chatting with your friends, family and colleagues"
+                subtitle="Sign in to continue chatting with your friends,family and colleagues"
             />
         </div>
     )
