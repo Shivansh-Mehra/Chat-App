@@ -26,14 +26,13 @@ await redisClient.set(`sidebarUsers:${loggedInId}`, JSON.stringify(users), 'EX',
 export const getMessages = wrapAsyncHandler(async (req, res) => {
     const { id } = req.params;
     try {
-        const cachedMessages = await redisClient.get(`messages:${req.user._id}:${id}`);
+const cachedMessages = await redisClient.get(`messages:${req.user._id}:${id}`);
         if (cachedMessages) {
-            console.log("CACHED!!");
             return res.status(200).json(JSON.parse(cachedMessages));
         }
         const messages = await Message.find({ $or: [{ senderId: req.user._id, receiverId: id }, { senderId: id, receiverId: req.user._id }] })
         .populate('senderId', 'username profilePic').sort({ createdAt: 1 });
-        await redisClient.set(`messages:${req.user._id}:${id}`, JSON.stringify(messages), 'EX', 3600);
+await redisClient.set(`messages:${req.user._id}:${id}`, JSON.stringify(messages), 'EX', 3600);
         res.status(200).json(messages);
     } catch (err) {
         res.status(500).send("Error while fetching messages");
